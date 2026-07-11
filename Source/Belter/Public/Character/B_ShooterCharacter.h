@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "B_ShooterCharacter.generated.h"
 
+class UB_CombatComponent;
 class UCameraComponent;
 class USpringArmComponent;
 
@@ -26,6 +27,9 @@ protected:
 
 	
 private:	
+	
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UB_CombatComponent> CombatComp;
 	
 	// 1st person view (arms)
 	UPROPERTY(VisibleAnywhere)
