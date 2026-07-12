@@ -2,6 +2,7 @@
 
 #include "Character/B_ShooterCharacter.h"
 
+#include "EnhancedInputComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Combat/B_CombatComponent.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -58,5 +59,41 @@ void AB_ShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	UEnhancedInputComponent* ShooterInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
+	ShooterInputComponent->BindAction(CycleWeaponAction, ETriggerEvent::Started, this, &ThisClass::Input_CycleWeapon);
+	ShooterInputComponent->BindAction(ReloadWeaponAction, ETriggerEvent::Started, this, &ThisClass::Input_ReloadWeapon);
+	ShooterInputComponent->BindAction(FireWeaponAction, ETriggerEvent::Started, this, &ThisClass::Input_FireWeapon_Pressed);
+	ShooterInputComponent->BindAction(FireWeaponAction, ETriggerEvent::Completed, this, &ThisClass::Input_FireWeapon_Released);
+	ShooterInputComponent->BindAction(AimWeaponAction, ETriggerEvent::Started, this, &ThisClass::Input_AimWeapon_Pressed);
+	ShooterInputComponent->BindAction(AimWeaponAction, ETriggerEvent::Completed, this, &ThisClass::Input_AimWeapon_Released);
 }
 
+void AB_ShooterCharacter::Input_CycleWeapon()
+{
+	CombatComp->Initiate_CycleWeapon();
+}
+
+void AB_ShooterCharacter::Input_ReloadWeapon()
+{
+	CombatComp->Initiate_ReloadWeapon();
+}
+
+void AB_ShooterCharacter::Input_FireWeapon_Pressed()
+{
+	CombatComp->Initiate_FireWeapon_Pressed();
+}
+
+void AB_ShooterCharacter::Input_FireWeapon_Released()
+{
+	CombatComp->Initiate_FireWeapon_Released();
+}
+
+void AB_ShooterCharacter::Input_AimWeapon_Pressed()
+{
+	CombatComp->Initiate_AimWeapon_Pressed();
+}
+
+void AB_ShooterCharacter::Input_AimWeapon_Released()
+{
+	CombatComp->Initiate_AimWeapon_Released();
+}

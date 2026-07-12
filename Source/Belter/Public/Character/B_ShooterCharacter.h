@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "B_ShooterCharacter.generated.h"
 
+class UInputAction;
 class UB_CombatComponent;
 class UCameraComponent;
 class USpringArmComponent;
@@ -26,7 +27,14 @@ public:
 protected:
 
 	
-private:	
+private:
+	
+	void Input_CycleWeapon();
+	void Input_ReloadWeapon();
+	void Input_FireWeapon_Pressed();
+	void Input_FireWeapon_Released();
+	void Input_AimWeapon_Pressed();
+	void Input_AimWeapon_Released();
 	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UB_CombatComponent> CombatComp;
@@ -39,4 +47,13 @@ private:
 	TObjectPtr<USpringArmComponent> SpringArm;
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> FirstPersonCamera;
+	
+	UPROPERTY(EditAnywhere, Category = "Belter|Input")
+	TObjectPtr<UInputAction> CycleWeaponAction;
+	UPROPERTY(EditAnywhere, Category = "Belter|Input")
+	TObjectPtr<UInputAction> FireWeaponAction;
+	UPROPERTY(EditAnywhere, Category = "Belter|Input")
+	TObjectPtr<UInputAction> ReloadWeaponAction;
+	UPROPERTY(EditAnywhere, Category = "Belter|Input")
+	TObjectPtr<UInputAction> AimWeaponAction;
 };

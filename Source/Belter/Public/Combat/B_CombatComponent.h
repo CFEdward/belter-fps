@@ -23,8 +23,8 @@ public:
 	void Initiate_FireWeapon_Pressed();
 	void Initiate_FireWeapon_Released();
 	void Initiate_ReloadWeapon();
-	void Initiate_Aim_Pressed();
-	void Initiate_Aim_Released();
+	void Initiate_AimWeapon_Pressed();
+	void Initiate_AimWeapon_Released();
 	
 protected:
 
