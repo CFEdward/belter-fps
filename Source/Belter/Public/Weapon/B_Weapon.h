@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "GameFramework/Actor.h"
 #include "B_Weapon.generated.h"
 
@@ -22,6 +23,9 @@ protected:
 
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditAnywhere, Category = "Belter|Config")
+	FGameplayTag WeaponType;
+	
 private:
 	
 	// Weapon Mesh for 1st person view
