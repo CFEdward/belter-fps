@@ -13,3 +13,27 @@ void UB_CombatComponent::TickComponent(const float DeltaTime, const ELevelTick T
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	
 }
+
+void UB_CombatComponent::Initiate_CycleWeapon()
+{
+}
+
+void UB_CombatComponent::Initiate_FireWeapon_Pressed()
+{
+}
+
+void UB_CombatComponent::Initiate_FireWeapon_Released()
+{
+}
+
+void UB_CombatComponent::Initiate_ReloadWeapon()
+{
+}
+
+void UB_CombatComponent::Initiate_Aim_Pressed()
+{
+}
+
+void UB_CombatComponent::Initiate_Aim_Released()
+{
+}
