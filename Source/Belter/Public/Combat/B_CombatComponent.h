@@ -18,9 +18,10 @@ public:
 
 	UB_CombatComponent();
 	
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
-	void SpawnInventory() const;
+	void SpawnInventory();
 	void DestroyInventory();
 	
 	// Cycle to the next weapon in the inventory
@@ -41,6 +42,9 @@ private:
 	
 	AB_Weapon* SpawnWeapon(TSubclassOf<AB_Weapon> WeaponClass) const;
 
+	UPROPERTY(Transient, Replicated)
+	TArray<TObjectPtr<AB_Weapon>> Inventory;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Belter|Weapon")
-	TSubclassOf<AB_Weapon> DefaultWeaponClass;
+	TArray<TSubclassOf<AB_Weapon>> DefaultWeaponClasses;
 };

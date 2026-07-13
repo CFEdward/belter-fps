@@ -4,12 +4,20 @@
 
 #include "Engine/Engine.h"
 #include "GameFramework/Pawn.h"
+#include "Net/UnrealNetwork.h"
 #include "Weapon/B_Weapon.h"
 
 UB_CombatComponent::UB_CombatComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 	
+}
+
+void UB_CombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	
+	DOREPLIFETIME(UB_CombatComponent, Inventory);
 }
 
 void UB_CombatComponent::TickComponent(const float DeltaTime, const ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -50,12 +58,20 @@ void UB_CombatComponent::Initiate_AimWeapon_Released()
 }
 #pragma endregion
 
-void UB_CombatComponent::SpawnInventory() const
+void UB_CombatComponent::SpawnInventory()
 {
-	AB_Weapon* NewWeapon = SpawnWeapon(DefaultWeaponClass);
-	if (!IsValid(NewWeapon)) return;
+	if (GetOwner()->GetLocalRole() < ROLE_Authority) return;
 	
-	NewWeapon->AttachToOwningPawn();
+	for (const TSubclassOf<AB_Weapon>& WeaponClass : DefaultWeaponClasses)
+	{
+		AB_Weapon* Weapon = SpawnWeapon(WeaponClass);
+		Inventory.AddUnique(Weapon);
+	}
+	
+	if (Inventory.Num() > 0)
+	{
+		Inventory[0]->AttachToOwningPawn();
+	}
 }
 
 void UB_CombatComponent::DestroyInventory()
