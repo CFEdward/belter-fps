@@ -77,6 +77,14 @@ void AB_ShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	ShooterInputComponent->BindAction(AimWeaponAction, ETriggerEvent::Completed, this, &ThisClass::Input_AimWeapon_Released);
 }
 
+void AB_ShooterCharacter::BeginDestroy()
+{
+	Super::BeginDestroy();
+	if (!IsValid(CombatComp)) return;
+	
+	CombatComp->DestroyInventory();
+}
+
 #pragma region InputCallbacks
 void AB_ShooterCharacter::Input_CycleWeapon()
 {

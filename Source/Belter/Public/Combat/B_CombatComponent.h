@@ -22,6 +22,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
 	void SpawnInventory();
+	void Equip(AB_Weapon* Weapon);
 	void DestroyInventory();
 	
 	// Cycle to the next weapon in the inventory
@@ -40,11 +41,16 @@ protected:
 
 private:
 	
+	UFUNCTION()
+	void OnRep_CurrentWeapon(AB_Weapon* LastWeapon);
+	
 	AB_Weapon* SpawnWeapon(TSubclassOf<AB_Weapon> WeaponClass) const;
 
 	UPROPERTY(Transient, Replicated)
 	TArray<TObjectPtr<AB_Weapon>> Inventory;
-	
+
+	UPROPERTY(Transient, ReplicatedUsing = OnRep_CurrentWeapon)
+	TObjectPtr<AB_Weapon> CurrentWeapon;
 	UPROPERTY(EditDefaultsOnly, Category = "Belter|Weapon")
 	TArray<TSubclassOf<AB_Weapon>> DefaultWeaponClasses;
 };

@@ -10,7 +10,6 @@
 UB_CombatComponent::UB_CombatComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
-	
 }
 
 void UB_CombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -18,12 +17,12 @@ void UB_CombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	
 	DOREPLIFETIME(UB_CombatComponent, Inventory);
+	DOREPLIFETIME(UB_CombatComponent, CurrentWeapon);
 }
 
 void UB_CombatComponent::TickComponent(const float DeltaTime, const ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	
 }
 
 #pragma region InputCallbacks
@@ -70,13 +69,32 @@ void UB_CombatComponent::SpawnInventory()
 	
 	if (Inventory.Num() > 0)
 	{
-		Inventory[0]->AttachToOwningPawn();
+		Equip(Inventory[0]);
 	}
+}
+
+void UB_CombatComponent::Equip(AB_Weapon* Weapon)
+{
+	CurrentWeapon = Weapon;
+	CurrentWeapon->AttachToOwningPawn();
 }
 
 void UB_CombatComponent::DestroyInventory()
 {
-	// TODO: Destroy the inventory once we have one
+	for (AB_Weapon* Weapon : Inventory)
+	{
+		if (IsValid(Weapon))
+		{
+			Weapon->Destroy();
+		}
+	}
+}
+
+void UB_CombatComponent::OnRep_CurrentWeapon(AB_Weapon* LastWeapon)
+{
+	if (!IsValid(CurrentWeapon)) return;
+	
+	CurrentWeapon->AttachToOwningPawn();
 }
 
 AB_Weapon* UB_CombatComponent::SpawnWeapon(const TSubclassOf<AB_Weapon> WeaponClass) const
