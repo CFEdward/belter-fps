@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "Combat/B_CombatComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Data/B_WeaponData.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
@@ -49,6 +50,14 @@ void AB_ShooterCharacter::BeginPlay()
 	
 }
 
+void AB_ShooterCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	if (!IsValid(CombatComp)) return;
+	
+	CombatComp->SpawnInventory();
+}
+
 void AB_ShooterCharacter::Tick(const float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -68,6 +77,7 @@ void AB_ShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	ShooterInputComponent->BindAction(AimWeaponAction, ETriggerEvent::Completed, this, &ThisClass::Input_AimWeapon_Released);
 }
 
+#pragma region InputCallbacks
 void AB_ShooterCharacter::Input_CycleWeapon()
 {
 	CombatComp->Initiate_CycleWeapon();
@@ -97,3 +107,11 @@ void AB_ShooterCharacter::Input_AimWeapon_Released()
 {
 	CombatComp->Initiate_AimWeapon_Released();
 }
+#pragma endregion
+
+FName AB_ShooterCharacter::GetWeaponAttachPoint_Implementation(const FGameplayTag& WeaponType) const
+{
+	checkf(CombatComp->WeaponData, TEXT("No Weapon Data Asset - PLease fill out BP_ShooterCharacter"));
+	return CombatComp->WeaponData->GripPoints.FindChecked(WeaponType);
+}
+

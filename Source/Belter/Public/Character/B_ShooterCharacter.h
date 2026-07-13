@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Interfaces/B_PlayerInterface.h"
 #include "B_ShooterCharacter.generated.h"
 
 class UInputAction;
@@ -12,7 +13,7 @@ class UCameraComponent;
 class USpringArmComponent;
 
 UCLASS()
-class BELTER_API AB_ShooterCharacter : public ACharacter
+class BELTER_API AB_ShooterCharacter : public ACharacter, public IB_PlayerInterface
 {
 	GENERATED_BODY()
 
@@ -21,8 +22,11 @@ public:
 	AB_ShooterCharacter();
 	
 	virtual void BeginPlay() override;
+	virtual void PossessedBy(AController* NewController) override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+	
+	virtual FName GetWeaponAttachPoint_Implementation(const FGameplayTag& WeaponType) const override;
 
 protected:
 
