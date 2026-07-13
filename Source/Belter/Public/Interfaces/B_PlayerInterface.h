@@ -23,5 +23,10 @@ class BELTER_API IB_PlayerInterface
 public:
 	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	USkeletalMeshComponent* GetMesh1P() const;
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	USkeletalMeshComponent* GetMesh3P() const;
+	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	FName GetWeaponAttachPoint(const FGameplayTag& WeaponType) const;
 };

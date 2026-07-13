@@ -26,6 +26,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	
+	virtual USkeletalMeshComponent* GetMesh1P_Implementation() const override { return Mesh1P; }
+	virtual USkeletalMeshComponent* GetMesh3P_Implementation() const override { return GetMesh(); }
 	virtual FName GetWeaponAttachPoint_Implementation(const FGameplayTag& WeaponType) const override;
 
 protected:

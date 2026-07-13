@@ -16,6 +16,10 @@ public:
 
 	AB_Weapon();
 	
+	virtual void OnRep_Instigator() override;
+	
+	void AttachToOwningPawn() const;
+	
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	USkeletalMeshComponent* GetMesh3P() const { return Mesh3P; }
 	
@@ -27,6 +31,8 @@ protected:
 	FGameplayTag WeaponType;
 	
 private:
+	
+	void SetMeshVisibilities(const APawn* OwningPawn) const;
 	
 	// Weapon Mesh for 1st person view
 	UPROPERTY(VisibleAnywhere)

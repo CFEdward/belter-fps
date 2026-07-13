@@ -3,6 +3,8 @@
 #include "Weapon/B_Weapon.h"
 
 #include "Components/SkeletalMeshComponent.h"
+#include "GameFramework/Pawn.h"
+#include "Interfaces/B_PlayerInterface.h"
 
 AB_Weapon::AB_Weapon()
 {
@@ -24,8 +26,44 @@ AB_Weapon::AB_Weapon()
 	//Mesh3P->SetHiddenInGame(true);
 }
 
+void AB_Weapon::OnRep_Instigator()
+{
+	Super::OnRep_Instigator();
+	
+	AttachToOwningPawn();
+}
+
+void AB_Weapon::AttachToOwningPawn() const
+{
+	const APawn* OwningPawn = GetInstigator();
+	if (!IsValid(OwningPawn) || !OwningPawn->Implements<UB_PlayerInterface>()) return;
+	
+	SetMeshVisibilities(OwningPawn);
+	
+	const FName AttachPoint = IB_PlayerInterface::Execute_GetWeaponAttachPoint(OwningPawn, WeaponType);
+	USkeletalMeshComponent* PawnMesh1P = IB_PlayerInterface::Execute_GetMesh1P(OwningPawn);
+	USkeletalMeshComponent* PawnMesh3P = IB_PlayerInterface::Execute_GetMesh3P(OwningPawn);
+	
+	Mesh1P->AttachToComponent(PawnMesh1P, FAttachmentTransformRules::KeepRelativeTransform, AttachPoint);
+	Mesh3P->AttachToComponent(PawnMesh3P, FAttachmentTransformRules::KeepRelativeTransform, AttachPoint);
+}
+
 void AB_Weapon::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void AB_Weapon::SetMeshVisibilities(const APawn* OwningPawn) const
+{
+	if (OwningPawn->IsLocallyControlled())
+	{
+		Mesh1P->SetHiddenInGame(false);
+		Mesh3P->SetHiddenInGame(true);
+	}
+	else
+	{
+		Mesh1P->SetHiddenInGame(true);
+		Mesh3P->SetHiddenInGame(false);
+	}
 }

@@ -50,9 +50,12 @@ void UB_CombatComponent::Initiate_AimWeapon_Released()
 }
 #pragma endregion
 
-void UB_CombatComponent::SpawnInventory()
+void UB_CombatComponent::SpawnInventory() const
 {
 	AB_Weapon* NewWeapon = SpawnWeapon(DefaultWeaponClass);
+	if (!IsValid(NewWeapon)) return;
+	
+	NewWeapon->AttachToOwningPawn();
 }
 
 void UB_CombatComponent::DestroyInventory()
@@ -60,7 +63,7 @@ void UB_CombatComponent::DestroyInventory()
 	// TODO: Destroy the inventory once we have one
 }
 
-AB_Weapon* UB_CombatComponent::SpawnWeapon(TSubclassOf<AB_Weapon> WeaponClass) const
+AB_Weapon* UB_CombatComponent::SpawnWeapon(const TSubclassOf<AB_Weapon> WeaponClass) const
 {
 	AActor* OwningActor = GetOwner();
 	if (!IsValid(OwningActor)) return nullptr;

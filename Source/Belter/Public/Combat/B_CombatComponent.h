@@ -20,7 +20,7 @@ public:
 	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
-	void SpawnInventory();
+	void SpawnInventory() const;
 	void DestroyInventory();
 	
 	// Cycle to the next weapon in the inventory
