@@ -35,6 +35,9 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Belter|Weapon")
 	TObjectPtr<UB_WeaponData> WeaponData;
+
+	UPROPERTY(BlueprintReadOnly, Replicated)
+	bool bAiming;
 	
 protected:
 
@@ -42,6 +45,10 @@ protected:
 	TObjectPtr<AB_Weapon> CurrentWeapon;
 
 private:
+	
+	UFUNCTION(Server, Reliable)
+	void Server_ToggleAiming(bool bPressed);
+	void Local_ToggleAiming(bool bPressed);
 	
 	UFUNCTION()
 	void OnRep_CurrentWeapon(AB_Weapon* LastWeapon);

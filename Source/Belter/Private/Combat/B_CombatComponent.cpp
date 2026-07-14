@@ -18,6 +18,7 @@ void UB_CombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	
 	DOREPLIFETIME(UB_CombatComponent, Inventory);
 	DOREPLIFETIME(UB_CombatComponent, CurrentWeapon);
+	DOREPLIFETIME_CONDITION(UB_CombatComponent, bAiming, COND_SkipOwner);
 }
 
 void UB_CombatComponent::TickComponent(const float DeltaTime, const ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -48,12 +49,14 @@ void UB_CombatComponent::Initiate_ReloadWeapon()
 
 void UB_CombatComponent::Initiate_AimWeapon_Pressed()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("Initiate_AimWeapon_Pressed"), false);
+	Local_ToggleAiming(true);
+	Server_ToggleAiming(true);
 }
 
 void UB_CombatComponent::Initiate_AimWeapon_Released()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("Initiate_AimWeapon_Released"), false);
+	Local_ToggleAiming(false);
+	Server_ToggleAiming(false);
 }
 #pragma endregion
 
@@ -88,6 +91,16 @@ void UB_CombatComponent::DestroyInventory()
 			Weapon->Destroy();
 		}
 	}
+}
+
+void UB_CombatComponent::Server_ToggleAiming_Implementation(const bool bPressed)
+{
+	Local_ToggleAiming(bPressed);
+}
+
+void UB_CombatComponent::Local_ToggleAiming(const bool bPressed)
+{
+	bAiming = bPressed;
 }
 
 void UB_CombatComponent::OnRep_CurrentWeapon(AB_Weapon* LastWeapon)
