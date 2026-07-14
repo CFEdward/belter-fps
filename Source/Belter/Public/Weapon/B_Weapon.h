@@ -20,6 +20,9 @@ public:
 	
 	void AttachToOwningPawn() const;
 	
+	UPROPERTY(EditAnywhere, Category = "Belter|Config")
+	FGameplayTag WeaponType;
+	
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	USkeletalMeshComponent* GetMesh3P() const { return Mesh3P; }
 	
@@ -27,9 +30,6 @@ protected:
 
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere, Category = "Belter|Config")
-	FGameplayTag WeaponType;
-	
 private:
 	
 	void SetMeshVisibilities(const APawn* OwningPawn) const;

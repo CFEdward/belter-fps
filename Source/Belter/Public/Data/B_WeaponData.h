@@ -7,6 +7,37 @@
 #include "Engine/DataAsset.h"
 #include "B_WeaponData.generated.h"
 
+class UBlendSpace;
+class UAnimSequence;
+
+USTRUCT(BlueprintType)
+struct FPlayerAnims
+{
+	GENERATED_BODY()
+	
+public:
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UAnimSequence> IdleAnim{ nullptr };
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UAnimSequence> AimIdleAnim{ nullptr };
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UAnimSequence> CrouchIdleAnim{ nullptr };
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UAnimSequence> SprintAnim{ nullptr };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UBlendSpace> AimOffset_Hip;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UBlendSpace> AimOffset_Aim;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UBlendSpace> Strafe_Standing;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UBlendSpace> Strafe_Crouching;
+};
+
 UCLASS()
 class BELTER_API UB_WeaponData : public UDataAsset
 {
@@ -14,6 +45,11 @@ class BELTER_API UB_WeaponData : public UDataAsset
 	
 public:
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Belter|WeaponData|Config")
+	UPROPERTY(EditDefaultsOnly, Category = "Belter|Config")
 	TMap<FGameplayTag, FName> GripPoints;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Belter|Animation|FirstPerson")
+	TMap<FGameplayTag, FPlayerAnims> FirstPersonAnims;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Belter|Animation|ThirdPerson")
+	TMap<FGameplayTag, FPlayerAnims> ThirdPersonAnims;
 };
