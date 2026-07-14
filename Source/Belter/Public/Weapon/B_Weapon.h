@@ -20,7 +20,7 @@ public:
 	
 	void AttachToOwningPawn() const;
 	
-	UPROPERTY(EditAnywhere, Category = "Belter|Config")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Belter|Config")
 	FGameplayTag WeaponType;
 	
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }

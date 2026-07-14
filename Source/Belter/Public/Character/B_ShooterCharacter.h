@@ -33,6 +33,8 @@ public:
 
 protected:
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Belter|Combat")
+	TObjectPtr<UB_CombatComponent> CombatComp;
 	
 private:
 	
@@ -42,9 +44,6 @@ private:
 	void Input_FireWeapon_Released();
 	void Input_AimWeapon_Pressed();
 	void Input_AimWeapon_Released();
-	
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UB_CombatComponent> CombatComp;
 	
 	// 1st person view (arms)
 	UPROPERTY(VisibleAnywhere)

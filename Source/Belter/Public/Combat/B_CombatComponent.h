@@ -33,11 +33,13 @@ public:
 	void Initiate_AimWeapon_Pressed();
 	void Initiate_AimWeapon_Released();
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Belter|Weapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Belter|Weapon")
 	TObjectPtr<UB_WeaponData> WeaponData;
 	
 protected:
 
+	UPROPERTY(Transient, BlueprintReadOnly, ReplicatedUsing = OnRep_CurrentWeapon)
+	TObjectPtr<AB_Weapon> CurrentWeapon;
 
 private:
 	
@@ -48,9 +50,7 @@ private:
 
 	UPROPERTY(Transient, Replicated)
 	TArray<TObjectPtr<AB_Weapon>> Inventory;
-
-	UPROPERTY(Transient, ReplicatedUsing = OnRep_CurrentWeapon)
-	TObjectPtr<AB_Weapon> CurrentWeapon;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Belter|Weapon")
 	TArray<TSubclassOf<AB_Weapon>> DefaultWeaponClasses;
 };
