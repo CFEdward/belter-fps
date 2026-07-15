@@ -48,6 +48,7 @@ void AB_ShooterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	FirstPersonCamera->SetFieldOfView(DefaultFOV);
 }
 
 void AB_ShooterCharacter::PossessedBy(AController* NewController)
@@ -109,11 +110,13 @@ void AB_ShooterCharacter::Input_FireWeapon_Released()
 void AB_ShooterCharacter::Input_AimWeapon_Pressed()
 {
 	CombatComp->Initiate_AimWeapon_Pressed();
+	OnAim(true);
 }
 
 void AB_ShooterCharacter::Input_AimWeapon_Released()
 {
 	CombatComp->Initiate_AimWeapon_Released();
+	OnAim(false);
 }
 #pragma endregion
 

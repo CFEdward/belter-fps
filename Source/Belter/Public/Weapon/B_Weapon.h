@@ -22,6 +22,9 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Belter|Config")
 	FGameplayTag WeaponType;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Belter|Aiming")
+	float AimFOV{ 65.f };
 	
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	USkeletalMeshComponent* GetMesh3P() const { return Mesh3P; }

@@ -33,6 +33,13 @@ public:
 
 protected:
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnAim(bool bIsAiming);
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Belter|Camera")
+	TObjectPtr<UCameraComponent> FirstPersonCamera;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Belter|Camera")
+	float DefaultFOV{ 90.f };
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Belter|Combat")
 	TObjectPtr<UB_CombatComponent> CombatComp;
 	
@@ -48,11 +55,8 @@ private:
 	// 1st person view (arms)
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USkeletalMeshComponent> Mesh1P;
-	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USpringArmComponent> SpringArm;
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UCameraComponent> FirstPersonCamera;
 	
 	UPROPERTY(EditAnywhere, Category = "Belter|Input")
 	TObjectPtr<UInputAction> CycleWeaponAction;
