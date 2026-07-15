@@ -35,6 +35,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FRotator GetFixedAimRotation() const;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Belter|FABRIK")
+	FTransform FABRIK_SocketTransform;
+
 protected:
 
 	UFUNCTION(BlueprintImplementableEvent)
@@ -48,6 +51,8 @@ protected:
 	TObjectPtr<UB_CombatComponent> CombatComp;
 	
 private:
+	
+	void CalculateFABRIKSocketTransform();
 	
 	void Input_CycleWeapon();
 	void Input_ReloadWeapon();

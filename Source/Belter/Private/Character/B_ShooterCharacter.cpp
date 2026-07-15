@@ -9,6 +9,7 @@
 #include "Data/B_WeaponData.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Weapon/B_Weapon.h"
 
 AB_ShooterCharacter::AB_ShooterCharacter()
 {
@@ -62,7 +63,29 @@ void AB_ShooterCharacter::PossessedBy(AController* NewController)
 void AB_ShooterCharacter::Tick(const float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	CalculateFABRIKSocketTransform();
+}
 
+void AB_ShooterCharacter::CalculateFABRIKSocketTransform()
+{
+	if (!IsValid(CombatComp) || !IsValid(CombatComp->GetCurrentWeapon()) || !IsValid(CombatComp->WeaponData) || !IsValid(CombatComp->GetCurrentWeapon()->GetMesh3P())) return;
+	
+	FABRIK_SocketTransform = CombatComp->GetCurrentWeapon()->GetMesh3P()->GetSocketTransform(
+		*CombatComp->WeaponData->LeftHandFABRIKSockets.Find(CombatComp->GetCurrentWeapon()->WeaponType),
+		RTS_World
+	);
+	FVector OutLocation;
+	FRotator OutRotation;
+	GetMesh()->TransformToBoneSpace(
+		CombatComp->WeaponData->RightHandBone,
+		FABRIK_SocketTransform.GetLocation(),
+		FABRIK_SocketTransform.GetRotation().Rotator(),
+		OutLocation,
+		OutRotation
+	);
+	FABRIK_SocketTransform.SetLocation(OutLocation);
+	FABRIK_SocketTransform.SetRotation(OutRotation.Quaternion());
 }
 
 void AB_ShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -123,7 +146,7 @@ void AB_ShooterCharacter::Input_AimWeapon_Released()
 FName AB_ShooterCharacter::GetWeaponAttachPoint_Implementation(const FGameplayTag& WeaponType) const
 {
 	checkf(CombatComp->WeaponData, TEXT("No Weapon Data Asset - PLease fill out BP_ShooterCharacter"));
-	return CombatComp->WeaponData->GripPoints.FindChecked(WeaponType);
+	return CombatComp->WeaponData->GripSockets.FindChecked(WeaponType);
 }
 
 FRotator AB_ShooterCharacter::GetFixedAimRotation() const

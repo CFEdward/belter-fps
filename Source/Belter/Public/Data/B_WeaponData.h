@@ -45,8 +45,12 @@ class BELTER_API UB_WeaponData : public UDataAsset
 	
 public:
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Belter|Config")
-	TMap<FGameplayTag, FName> GripPoints;
+	UPROPERTY(EditDefaultsOnly, Category = "Belter|Attachment Settings")
+	TMap<FGameplayTag, FName> GripSockets;
+	UPROPERTY(EditDefaultsOnly, Category = "Belter|Attachment Settings")
+	TMap<FGameplayTag, FName> LeftHandFABRIKSockets;
+	UPROPERTY(EditDefaultsOnly, Category = "Belter|Attachment Settings")
+	FName RightHandBone;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Belter|Animation|FirstPerson")
 	TMap<FGameplayTag, FPlayerAnims> FirstPersonAnims;

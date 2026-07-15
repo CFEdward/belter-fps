@@ -39,6 +39,8 @@ public:
 	UPROPERTY(BlueprintReadOnly, Replicated)
 	bool bAiming;
 	
+	AB_Weapon* GetCurrentWeapon() const { return CurrentWeapon; }
+	
 protected:
 
 	UPROPERTY(Transient, BlueprintReadOnly, ReplicatedUsing = OnRep_CurrentWeapon)
