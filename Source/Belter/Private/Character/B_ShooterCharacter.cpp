@@ -126,3 +126,17 @@ FName AB_ShooterCharacter::GetWeaponAttachPoint_Implementation(const FGameplayTa
 	return CombatComp->WeaponData->GripPoints.FindChecked(WeaponType);
 }
 
+FRotator AB_ShooterCharacter::GetFixedAimRotation() const
+{
+	FRotator AimRotation = GetBaseAimRotation();
+	if (AimRotation.Pitch > 90.f && !IsLocallyControlled())
+	{
+		// Map pitch from [270, 360) to [-90, 0]
+		const FVector2D InRange(270.f, 360.f);
+		const FVector2D OutRange(-90.f, 0.f);
+		AimRotation.Pitch = FMath::GetMappedRangeValueClamped(InRange, OutRange, AimRotation.Pitch);
+	}
+	
+	return AimRotation;
+}
+

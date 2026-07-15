@@ -31,6 +31,10 @@ public:
 	virtual USkeletalMeshComponent* GetMesh3P_Implementation() const override { return GetMesh(); }
 	virtual FName GetWeaponAttachPoint_Implementation(const FGameplayTag& WeaponType) const override;
 
+	// Necessary due to network compression
+	UFUNCTION(BlueprintCallable)
+	FRotator GetFixedAimRotation() const;
+
 protected:
 
 	UFUNCTION(BlueprintImplementableEvent)
