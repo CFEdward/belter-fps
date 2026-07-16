@@ -9,6 +9,7 @@
 #include "Data/B_WeaponData.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Weapon/B_Weapon.h"
 
 AB_ShooterCharacter::AB_ShooterCharacter()
@@ -50,6 +51,7 @@ void AB_ShooterCharacter::BeginPlay()
 	Super::BeginPlay();
 	
 	FirstPersonCamera->SetFieldOfView(DefaultFOV);
+	StartingAimRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
 }
 
 void AB_ShooterCharacter::PossessedBy(AController* NewController)
@@ -64,6 +66,7 @@ void AB_ShooterCharacter::Tick(const float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
+	CalculateTurnInPlaceParams(DeltaTime);
 	CalculateFABRIKSocketTransform();
 }
 
@@ -86,6 +89,64 @@ void AB_ShooterCharacter::CalculateFABRIKSocketTransform()
 	);
 	FABRIK_SocketTransform.SetLocation(OutLocation);
 	FABRIK_SocketTransform.SetRotation(OutRotation.Quaternion());
+}
+
+void AB_ShooterCharacter::CalculateTurnInPlaceParams(const float DeltaTime)
+{
+	const FVector Velocity = GetVelocity();
+	const float Speed = Velocity.Size2D();
+	const bool bIsInAir = GetCharacterMovement()->IsFalling();
+	
+	// Standing still, not jumping
+	if (Speed == 0.f && !bIsInAir)
+	{
+		const FRotator CurrentAimRotation(0.f, GetBaseAimRotation().Yaw, 0.f);
+		// StartingAimRotation initially set in BeginPlay
+		const FRotator DeltaAimRotation = UKismetMathLibrary::NormalizedDeltaRotator(CurrentAimRotation, StartingAimRotation);
+		AO_Yaw = DeltaAimRotation.Yaw;
+		
+		if (TurningStatus == EB_TurningInPlace::NotTurning)
+		{
+			InterpAO_Yaw = AO_Yaw;
+		}
+		
+		TurnInPlace(DeltaTime);
+	}
+	
+	if (Speed > 0.f || bIsInAir)
+	{
+		StartingAimRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
+		AO_Yaw = 0.f;
+
+		const FRotator AimRotation = GetBaseAimRotation();
+		const FRotator MovementRotation = UKismetMathLibrary::MakeRotFromX(Velocity);
+		MovementOffsetYaw = UKismetMathLibrary::NormalizedDeltaRotator(MovementRotation, AimRotation).Yaw;
+		TurningStatus = EB_TurningInPlace::NotTurning;
+	}
+	
+	AO_Yaw *= -1.f;
+}
+
+void AB_ShooterCharacter::TurnInPlace(const float DeltaTime)
+{
+	if (AO_Yaw > 90.f)
+	{
+		TurningStatus = EB_TurningInPlace::Right;
+	}
+	else if (AO_Yaw < -90.f)
+	{
+		TurningStatus = EB_TurningInPlace::Left;
+	}
+	if (TurningStatus != EB_TurningInPlace::NotTurning)
+	{
+		InterpAO_Yaw = FMath::FInterpTo(InterpAO_Yaw, 0.f, DeltaTime, 4.f);
+		AO_Yaw = InterpAO_Yaw;
+		if (FMath::Abs(AO_Yaw) < 5.f)
+		{
+			TurningStatus = EB_TurningInPlace::NotTurning;
+			StartingAimRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
+		}
+	}
 }
 
 void AB_ShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -147,6 +208,11 @@ FName AB_ShooterCharacter::GetWeaponAttachPoint_Implementation(const FGameplayTa
 {
 	checkf(CombatComp->WeaponData, TEXT("No Weapon Data Asset - PLease fill out BP_ShooterCharacter"));
 	return CombatComp->WeaponData->GripSockets.FindChecked(WeaponType);
+}
+
+bool AB_ShooterCharacter::HasCurrentWeapon() const
+{
+	return IsValid(CombatComp) && CombatComp->GetCurrentWeapon() != nullptr;
 }
 
 FRotator AB_ShooterCharacter::GetFixedAimRotation() const

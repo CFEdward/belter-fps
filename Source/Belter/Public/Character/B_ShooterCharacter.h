@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/B_PlayerInterface.h"
+#include "ShooterTypes/B_ShooterTypes.h"
 #include "B_ShooterCharacter.generated.h"
 
 class UInputAction;
@@ -31,6 +32,9 @@ public:
 	virtual USkeletalMeshComponent* GetMesh3P_Implementation() const override { return GetMesh(); }
 	virtual FName GetWeaponAttachPoint_Implementation(const FGameplayTag& WeaponType) const override;
 
+	UFUNCTION(BlueprintCallable)
+	bool HasCurrentWeapon() const;
+
 	// Necessary due to network compression
 	UFUNCTION(BlueprintCallable)
 	FRotator GetFixedAimRotation() const;
@@ -42,6 +46,13 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnAim(bool bIsAiming);
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Belter|Turn In Place")
+	float AO_Yaw;
+	UPROPERTY(BlueprintReadOnly, Category = "Belter|Strafe")
+	float MovementOffsetYaw;
+	UPROPERTY(BlueprintReadOnly, Category = "Belter|Turn In Place")
+	EB_TurningInPlace TurningStatus{ EB_TurningInPlace::NotTurning };
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Belter|Camera")
 	TObjectPtr<UCameraComponent> FirstPersonCamera;
@@ -53,6 +64,8 @@ protected:
 private:
 	
 	void CalculateFABRIKSocketTransform();
+	void CalculateTurnInPlaceParams(float DeltaTime);
+	void TurnInPlace(float DeltaTime);
 	
 	void Input_CycleWeapon();
 	void Input_ReloadWeapon();
@@ -60,6 +73,9 @@ private:
 	void Input_FireWeapon_Released();
 	void Input_AimWeapon_Pressed();
 	void Input_AimWeapon_Released();
+	
+	FRotator StartingAimRotation;
+	float InterpAO_Yaw;
 	
 	// 1st person view (arms)
 	UPROPERTY(VisibleAnywhere)

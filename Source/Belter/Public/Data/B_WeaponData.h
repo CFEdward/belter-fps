@@ -11,7 +11,7 @@ class UBlendSpace;
 class UAnimSequence;
 
 USTRUCT(BlueprintType)
-struct FPlayerAnims
+struct FB_PlayerAnims
 {
 	GENERATED_BODY()
 	
@@ -53,7 +53,7 @@ public:
 	FName RightHandBone;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Belter|Animation|FirstPerson")
-	TMap<FGameplayTag, FPlayerAnims> FirstPersonAnims;
+	TMap<FGameplayTag, FB_PlayerAnims> FirstPersonAnims;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Belter|Animation|ThirdPerson")
-	TMap<FGameplayTag, FPlayerAnims> ThirdPersonAnims;
+	TMap<FGameplayTag, FB_PlayerAnims> ThirdPersonAnims;
 };
